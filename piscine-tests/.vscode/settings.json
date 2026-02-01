@@ -1,0 +1,46 @@
+{
+  "go.testFlags": [
+    "-v",
+    "-cover"
+  ],
+  "go.coverOnSave": true,
+  "go.coverageDecorator": {
+    "type": "gutter",
+    "coveredHighlightColor": "rgba(64,128,64,0.5)",
+    "uncoveredHighlightColor": "rgba(128,64,64,0.5)",
+    "coveredGutterStyle": "blockgreen",
+    "uncoveredGutterStyle": "blockred"
+  },
+  "go.testOnSave": false,
+  "go.coverageOptions": "showCoveredCodeOnly",
+  "go.toolsManagement.autoUpdate": true,
+  
+  // Editor settings for tests
+  "files.associations": {
+    "*_test.go": "go"
+  },
+  
+  // Test explorer settings
+  "go.testExplorer.enable": true,
+  "go.testExplorer.showDynamicSubtestsInEditor": true,
+  
+  // Format on save
+  "editor.formatOnSave": true,
+  "go.formatTool": "gofmt",
+  
+  // Linting
+  "go.lintOnSave": "package",
+  "go.lintTool": "golangci-lint",
+  
+  // Code lens
+  "go.enableCodeLens": {
+    "runtest": true,
+    "references": false
+  },
+  
+  // Recommended extensions
+  "recommendations": [
+    "golang.go",
+    "github.vscode-pull-request-github"
+  ]
+}

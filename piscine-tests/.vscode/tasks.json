@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run All Tests",
+      "type": "shell",
+      "command": "go test ./piscine -v -cover",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": "$go"
+    },
+    {
+      "label": "Run Tests with Coverage Report",
+      "type": "shell",
+      "command": "go test ./piscine -coverprofile=coverage.out && go tool cover -html=coverage.out",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Run Benchmarks",
+      "type": "shell",
+      "command": "go test ./piscine -bench=. -benchmem",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Run Current Test File",
+      "type": "shell",
+      "command": "go test -v ${relativeFile}",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Clean Test Cache",
+      "type": "shell",
+      "command": "go clean -testcache",
+      "presentation": {
+        "reveal": "silent"
+      }
+    }
+  ]
+}
