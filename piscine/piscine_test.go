@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"os"
-	"piscine/piscine"
 	"testing"
 )
 
@@ -46,7 +45,7 @@ func TestFirstWord(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := piscine.FirstWord(tt.input)
+			result := FirstWord(tt.input)
 			if result != tt.expected {
 				t.Errorf("FirstWord(%q) = %q, want %q", tt.input, result, tt.expected)
 			}
@@ -72,7 +71,7 @@ func TestLastWord(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := piscine.LastWord(tt.input)
+			result := LastWord(tt.input)
 			if result != tt.expected {
 				t.Errorf("LastWord(%q) = %q, want %q", tt.input, result, tt.expected)
 			}
@@ -100,7 +99,7 @@ func TestGcd(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := piscine.Gcd(tt.a, tt.b)
+			result := Gcd(tt.a, tt.b)
 			if result != tt.expected {
 				t.Errorf("Gcd(%d, %d) = %d, want %d", tt.a, tt.b, result, tt.expected)
 			}
@@ -124,7 +123,7 @@ func TestHashCode(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := piscine.HashCode(tt.input)
+			result := HashCode(tt.input)
 
 			// Check that result has same length as input
 			if len(result) != len(tt.input) {
@@ -161,7 +160,7 @@ func TestIsCapitalized(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := piscine.IsCapitalized(tt.input)
+			result := IsCapitalized(tt.input)
 			if result != tt.expected {
 				t.Errorf("IsCapitalized(%q) = %v, want %v", tt.input, result, tt.expected)
 			}
@@ -190,7 +189,7 @@ func TestFields(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := piscine.Fields(tt.input)
+			result := Fields(tt.input)
 			if len(result) != len(tt.expected) {
 				t.Errorf("Fields(%q) length = %d, want %d", tt.input, len(result), len(tt.expected))
 				return
@@ -221,7 +220,7 @@ func TestIsNegative(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := captureOutput(func() {
-				piscine.IsNegative(tt.input)
+				IsNegative(tt.input)
 			})
 			if result != tt.expected {
 				t.Errorf("IsNegative(%d) output = %q, want %q", tt.input, result, tt.expected)
@@ -234,7 +233,7 @@ func TestIsNegative(t *testing.T) {
 func TestPrintAlpha(t *testing.T) {
 	expected := "abcdefghijklmnopqrstuvwxyz\n"
 	result := captureOutput(func() {
-		piscine.PrintAlpha()
+		PrintAlpha()
 	})
 	if result != expected {
 		t.Errorf("PrintAlpha() = %q, want %q", result, expected)
@@ -245,7 +244,7 @@ func TestPrintAlpha(t *testing.T) {
 func TestPrintReverseAlpha(t *testing.T) {
 	expected := "zyxwvutsrqponmlkjihgfedcba\n"
 	result := captureOutput(func() {
-		piscine.PrintReverseAlpha()
+		PrintReverseAlpha()
 	})
 	if result != expected {
 		t.Errorf("PrintReverseAlpha() = %q, want %q", result, expected)
@@ -256,7 +255,7 @@ func TestPrintReverseAlpha(t *testing.T) {
 func TestPrintDigit(t *testing.T) {
 	expected := "0123456789\n"
 	result := captureOutput(func() {
-		piscine.PrintDigit()
+		PrintDigit()
 	})
 	if result != expected {
 		t.Errorf("PrintDigit() = %q, want %q", result, expected)
@@ -266,7 +265,7 @@ func TestPrintDigit(t *testing.T) {
 // Tests for PrintComp
 func TestPrintComp(t *testing.T) {
 	result := captureOutput(func() {
-		piscine.PrintComp()
+		PrintComp()
 	})
 
 	// Check that it starts correctly
@@ -288,7 +287,7 @@ func TestPrintComp(t *testing.T) {
 // Tests for PrintComb2
 func TestPrintComb2(t *testing.T) {
 	result := captureOutput(func() {
-		piscine.PrintComb2()
+		PrintComb2()
 	})
 
 	// Check that it starts correctly
@@ -323,7 +322,7 @@ func TestPrintNbr(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := captureOutput(func() {
-				piscine.PrintNbr(tt.input)
+				PrintNbr(tt.input)
 			})
 			if result != tt.expected {
 				t.Errorf("PrintNbr(%d) = %q, want %q", tt.input, result, tt.expected)
@@ -355,7 +354,7 @@ func TestPrintMemory(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := captureOutput(func() {
-				piscine.PrintMemory(tt.input)
+				PrintMemory(tt.input)
 			})
 
 			// Check that output has at least 3 lines (hex output + character output)
@@ -375,27 +374,27 @@ func TestPrintMemory(t *testing.T) {
 // Benchmark tests
 func BenchmarkGcd(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		piscine.Gcd(1071, 462)
+		Gcd(1071, 462)
 	}
 }
 
 func BenchmarkHashCode(b *testing.B) {
 	input := "This is a test string for benchmarking"
 	for i := 0; i < b.N; i++ {
-		piscine.HashCode(input)
+		HashCode(input)
 	}
 }
 
 func BenchmarkFields(b *testing.B) {
 	input := "  hello   world   foo   bar   baz  "
 	for i := 0; i < b.N; i++ {
-		piscine.Fields(input)
+		Fields(input)
 	}
 }
 
 func BenchmarkIsCapitalized(b *testing.B) {
 	input := "Hello World Foo Bar"
 	for i := 0; i < b.N; i++ {
-		piscine.IsCapitalized(input)
+		IsCapitalized(input)
 	}
 }
