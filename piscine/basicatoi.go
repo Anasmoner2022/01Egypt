@@ -11,14 +11,14 @@ This function will only have to return the int. For this exercise the error retu
 */
 func BasicAtoi(s string) int {
 	var result int
-	for _, ch := range s {
-		if ch >= '0' && ch <= '9' {
-			result = result*10 + int(ch-'0')
-			// if i == len(s)-1 {
-			// 	break
-			// }
-			// result *= 10
+	// "123"
+	for i, ch := range s {
+		convChar := int(ch - '0')
+		result += convChar
+		if i != len(s)-1 {
+			result *= 10
 		}
+
 	}
 	return result
 }

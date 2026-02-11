@@ -6,13 +6,14 @@ type food struct {
 
 func FoodDeliveryTime(order string) int {
 	var item food
-	if order == "burger" {
+	switch order {
+	case "burger":
 		item.preptime = 15
-	} else if order == "chips" {
+	case "chips":
 		item.preptime = 10
-	} else if order == "nuggets" {
+	case "nuggets":
 		item.preptime = 12
-	} else {
+	default:
 		item.preptime = 404
 	}
 

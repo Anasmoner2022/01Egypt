@@ -26,6 +26,7 @@ func Atoi(s string) int {
 		sign = -1
 		start = 1
 	}
+
 	for i := start; i < len(s); i++ {
 		ch := s[i]
 		if ch < '0' || ch > '9' {
