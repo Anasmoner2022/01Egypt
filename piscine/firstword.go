@@ -12,6 +12,7 @@ func Fields(s string) []string {
 	var result []string
 	i := 0
 	for i < len(s) {
+
 		for i < len(s) && isWhiteSpace(s[i]) {
 			i++
 		}

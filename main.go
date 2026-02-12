@@ -1,37 +1,17 @@
 package main
 
 import (
-	"unicode"
-
-	"github.com/01-edu/z01"
+	"fmt"
+	"piscine/piscine"
 )
 
-func PrintMemory(arr [10]byte) {
-	for i := 0; i < len(arr); i++ {
-		if i > 0 && i%4 == 0 {
-			z01.PrintRune('\n')
-		} else if i > 0 {
-			z01.PrintRune(' ')
-		}
-		printHex(arr[i])
-	}
-	z01.PrintRune('\n')
-	for i := 0; i < len(arr); i++ {
-		if unicode.IsGraphic(rune(arr[i])) {
-			z01.PrintRune(rune(arr[i]))
-		} else {
-			z01.PrintRune('.')
-		}
-	}
-	z01.PrintRune('\n')
-}
-
-func printHex(c byte) {
-	hexValues := "0123456789abcdef"
-	z01.PrintRune(rune(hexValues[c/16]))
-	z01.PrintRune(rune(hexValues[c%16]))
-}
-
 func main() {
-	PrintMemory([10]byte{'h', 'e', 'l', 'l', 'o', 16, 21, '*'})
+	fmt.Print(piscine.FromTo(1, 10))
+	fmt.Print(piscine.FromTo(10, 1))
+	fmt.Print(piscine.FromTo(10, 10))
+	fmt.Print(piscine.FromTo(100, 10))
+	fmt.Print(piscine.FromTo(0, 5))    // 00, 01, 02, 03, 04, 05
+	fmt.Print(piscine.FromTo(5, 0))    // 05, 04, 03, 02, 01, 00
+	fmt.Print(piscine.FromTo(-1, 5))   // Invalid
+	fmt.Print(piscine.FromTo(95, 100)) // Invalid
 }
