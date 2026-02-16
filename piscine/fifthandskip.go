@@ -4,37 +4,43 @@ func FifthAndSkip(str string) string {
 	if str == "" {
 		return "\n"
 	}
-
-	var cleaned []rune
-	for _, ch := range str {
-		if ch != ' ' {
-			cleaned = append(cleaned, ch)
-		}
+	if len(str) < 5 {
+		return "Invalid Input\n"
 	}
 
+	// Remove spaces
+	cleaned := ""
+	for _, ch := range str {
+		if ch != ' ' {
+			cleaned += string(ch)
+		}
+	}
+	// fmt.Println(cleaned)
 	if len(cleaned) < 5 {
 		return "Invalid Input\n"
 	}
 
-	var result []rune
-	count := 0
+	result := ""
+	position := 0
 
-	for _, ch := range cleaned {
-		count++
+	for i, ch := range cleaned {
+		position++
 
-		if count == 6 {
-			count = 0
+		if position == 6 {
+			position = 0
 			continue
 		}
 
-		result = append(result, ch)
-
-		if count == 5 {
-			result = append(result, ' ')
-			count = 0
+		if position <= 4 {
+			result += string(ch)
+		} else if position == 5 {
+			if i != len(cleaned)-1 {
+				result += string(ch) + " "
+			} else {
+				result += string(ch)
+			}
 		}
 	}
 
-	result = append(result, '\n')
-	return string(result)
+	return result + "\n"
 }
