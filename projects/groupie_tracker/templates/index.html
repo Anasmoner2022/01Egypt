@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Groupie Tracker - Artists</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <h1>Music Artists</h1>
+    
+    <div class="artists-grid">
+        {{range .}}
+        <div class="artist-card">
+            <img src="{{.Image}}" alt="{{.Name}}">
+            <h2>{{.Name}}</h2>
+            <p>Created: {{.CreationDate}}</p>
+            <a href="/artist?id={{.ID}}">View Details</a>
+        </div>
+        {{end}}
+    </div>
+</body>
+</html>
