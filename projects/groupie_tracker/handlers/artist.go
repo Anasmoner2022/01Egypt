@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"groupi_tracker/api"
-	"groupi_tracker/models"
+	"groupie_tracker/api"
+	"groupie_tracker/models"
 	"html/template"
 	"log"
 	"net/http"

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"groupi_tracker/api"
+	"groupie_tracker/api"
 	"html/template"
 	"log"
 	"net/http"

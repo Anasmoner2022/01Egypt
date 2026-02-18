@@ -20,73 +20,6 @@ h1 {
     color: #1DB954;
 }
 
-/* ── Search bar ─────────────────────────────────── */
-.search-bar {
-    max-width: 800px;
-    margin: 0 auto 40px;
-}
-
-.search-bar form {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-.search-bar input[type="text"],
-.search-bar input[type="number"] {
-    flex: 1;
-    min-width: 180px;
-    padding: 10px 15px;
-    border-radius: 20px;
-    border: 1px solid #333;
-    background-color: #282828;
-    color: #ffffff;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.search-bar input:focus {
-    border-color: #1DB954;
-}
-
-.search-bar button {
-    padding: 10px 24px;
-    border-radius: 20px;
-    border: none;
-    background-color: #1DB954;
-    color: #ffffff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.search-bar button:hover {
-    background-color: #17a349;
-}
-
-.clear-btn {
-    padding: 10px 16px;
-    border-radius: 20px;
-    background-color: #444;
-    color: #ccc;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
-}
-
-.clear-btn:hover {
-    background-color: #555;
-}
-
-.no-results {
-    text-align: center;
-    color: #b3b3b3;
-    font-size: 1.2rem;
-    margin-top: 60px;
-}
-
 /* ── Artists grid ───────────────────────────────── */
 .artists-grid {
     display: grid;
@@ -254,14 +187,5 @@ h1 {
 @media (max-width: 600px) {
     .artist-detail {
         padding: 20px;
-    }
-
-    .search-bar form {
-        flex-direction: column;
-    }
-
-    .search-bar input,
-    .search-bar button {
-        width: 100%;
     }
 }

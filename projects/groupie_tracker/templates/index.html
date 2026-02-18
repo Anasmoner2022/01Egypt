@@ -4,66 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Groupie Tracker - Artists</title>
-    <!-- FIX: Use absolute path /static/ not relative ../static/ -->
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <h1>Music Artists</h1>
-
-    <!-- NEW: Search form — client-server interaction feature -->
-    <div class="search-bar">
-        <form action="/search" method="GET">
-            <input
-                type="text"
-                name="q"
-                placeholder="Search by name, member, or album..."
-                value="{{if .Query}}{{.Query}}{{end}}"
-            >
-            <input
-                type="number"
-                name="year"
-                placeholder="Filter by creation year..."
-                value="{{if .Year}}{{.Year}}{{end}}"
-                min="1900"
-                max="2100"
-            >
-            <button type="submit">Search</button>
-            {{if .Query}}<a href="/" class="clear-btn">Clear</a>{{end}}
-            {{if .Year}}<a href="/" class="clear-btn">Clear</a>{{end}}
-        </form>
-    </div>
-
-    <!-- Handle data from HomeHandler (plain []Artist) and SearchHandler (struct with .Artists) -->
-    {{if .Artists}}
-        {{if eq (len .Artists) 0}}
-            <p class="no-results">No artists found matching your search.</p>
-        {{else}}
-            <div class="artists-grid">
-                {{range .Artists}}
-                <div class="artist-card">
-                    <a href="/artist?id={{.ID}}">
-                        <img src="{{.Image}}" alt="{{.Name}}">
-                        <h2>{{.Name}}</h2>
-                        <p>Created: {{.CreationDate}}</p>
-                    </a>
-                </div>
-                {{end}}
-            </div>
-        {{end}}
-    {{else}}
-        <!-- HomeHandler passes []Artist directly, range over . -->
-        <div class="artists-grid">
-            {{range .}}
-            <div class="artist-card">
-                <a href="/artist?id={{.ID}}">
-                    <img src="{{.Image}}" alt="{{.Name}}">
-                    <h2>{{.Name}}</h2>
-                    <p>Created: {{.CreationDate}}</p>
-                </a>
-            </div>
-            {{end}}
+    
+    <div class="artists-grid">
+        {{range .}}
+        <div class="artist-card">
+            <img src="{{.Image}}" alt="{{.Name}}">
+            <h2>{{.Name}}</h2>
+            <p>Created: {{.CreationDate}}</p>
+            <a href="/artist?id={{.ID}}">View Details</a>
         </div>
-    {{end}}
+        {{end}}
+    </div>
 
     <script src="/static/js/script.js"></script>
 </body>

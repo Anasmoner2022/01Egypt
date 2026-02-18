@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"groupi_tracker/models"
+	"groupie_tracker/models"
 	"net/http"
 )
 
