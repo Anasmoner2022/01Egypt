@@ -18,11 +18,18 @@ type ArtistData struct {
 
 // ArtistHandler displays individual artist details
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {
-	// 1. Get artist ID from URL (query parameter or path)
+	// 1. Get artist ID from URL query parameter
 	idStr := r.URL.Query().Get("id")
+
+	// FIX: Check explicitly for missing id param before Atoi
+	if idStr == "" {
+		RenderError(w, http.StatusBadRequest, "Missing artist ID")
+		return
+	}
+
 	targetId, err := strconv.Atoi(idStr)
-	if err != nil {
-		RenderError(w, http.StatusBadRequest, "Invalid Artist ID")
+	if err != nil || targetId < 1 {
+		RenderError(w, http.StatusBadRequest, "Invalid artist ID")
 		return
 	}
 
@@ -30,9 +37,10 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	artists, err := api.GetArtists()
 	if err != nil {
 		log.Printf("Error fetching artists: %v", err)
-		RenderError(w, http.StatusInternalServerError, "Internal Server Error")
+		RenderError(w, http.StatusInternalServerError, "Failed to fetch artists data")
 		return
 	}
+
 	// 3. Find the artist with matching ID
 	var selectedArtist models.Artist
 	found := false
@@ -44,13 +52,32 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if !found {
-		http.NotFound(w, r)
+		RenderError(w, http.StatusNotFound, "Artist not found")
 		return
 	}
-	// 4. Fetch additional data (locations, dates, relations)
+
+	// 4. Fetch additional data — FIX: each has its own error check
 	locations, err := api.GetLocations(selectedArtist.Locations)
+	if err != nil {
+		log.Printf("Error fetching locations for artist %d: %v", targetId, err)
+		RenderError(w, http.StatusInternalServerError, "Failed to fetch location data")
+		return
+	}
+
 	dates, err := api.GetDates(selectedArtist.ConcertDates)
+	if err != nil {
+		log.Printf("Error fetching dates for artist %d: %v", targetId, err)
+		RenderError(w, http.StatusInternalServerError, "Failed to fetch date data")
+		return
+	}
+
 	relations, err := api.GetRelations(selectedArtist.Relations)
+	if err != nil {
+		log.Printf("Error fetching relations for artist %d: %v", targetId, err)
+		RenderError(w, http.StatusInternalServerError, "Failed to fetch relation data")
+		return
+	}
+
 	// 5. Combine data into a struct for template
 	data := ArtistData{
 		Artist:    selectedArtist,
@@ -58,8 +85,8 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 		Dates:     dates,
 		Relations: relations,
 	}
+
 	// 6. Render artist.html template
-	// Use a relative path that matches your project structure
 	tmpl, err := template.ParseFiles("./templates/artist.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
@@ -67,8 +94,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 4. Execute template with artists data
-	// Note: No need for &artists, passing the slice directly is standard
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)

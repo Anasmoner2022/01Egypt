@@ -16,9 +16,3 @@ func main() {
 	fmt.Printf("Input: %s, Output: %s\n", inputFile, outputFile)
 
 }
-
-func readFile(filename string) (string, error) {
-	// Use os.ReadFile to read entire file
-
-	// Return content as string and error
-}
