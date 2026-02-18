@@ -1,1256 +1,779 @@
-# Push-Swap Project Guide
+# Push-Swap Project Guide - Learn to Think Like a Programmer
 
-## 📋 Project Overview
-Build a sorting program using only stack operations. You have two stacks (a and b) and a limited set of operations to sort integers in ascending order with the minimum number of moves. This project teaches you about sorting algorithms, optimization, and working with constraints. You'll build two programs: **push-swap** (the solver) and **checker** (the verifier).
+## 📋 What This Guide IS and IS NOT
 
-**The Challenge**: Sort numbers using ONLY the allowed operations, and do it efficiently!
+### ❌ This Guide Will NOT:
+- Give you code to copy
+- Provide ready-to-use functions
+- Solve the problem for you
+- Let you skip the learning process
 
----
+### ✅ This Guide WILL:
+- Teach you HOW to think about the problem
+- Guide you through breaking it down
+- Point you to concepts you need to learn
+- Ask questions that help you discover solutions
+- Show you WHERE to research, not WHAT to write
 
-## 🎯 Learning Objectives
-
-By completing this project, you will learn:
-1. **Stack Data Structures**: Operations, memory management
-2. **Sorting Algorithms**: Especially constrained sorting
-3. **Algorithm Optimization**: Minimizing operation count
-4. **Problem Decomposition**: Breaking complex problems into steps
-5. **Algorithm Design**: Creating custom sorting strategies
-6. **Complexity Analysis**: Understanding time and space complexity
-7. **Input Validation**: Robust error handling
-8. **Testing**: Comprehensive test coverage
-9. **Performance Metrics**: Measuring algorithm efficiency
+**Remember**: The goal is to make YOU a programmer who can solve problems, not to finish this project quickly.
 
 ---
 
-## 📚 Prerequisites - Topics You Must Know
+## 🎯 Before You Start: Essential Understanding
 
-### 1. **Stack Data Structure**
-**What is a Stack?**
-- LIFO (Last In, First Out)
-- Like a stack of plates: add/remove from top only
-- Two main operations: push (add), pop (remove)
+### What is This Project Really Teaching You?
 
-```
-Stack Example:
-         [5]  ← top (can push/pop here)
-         [3]
-         [7]
-         [1]  ← bottom (cannot access directly)
-```
+This isn't just about sorting numbers. It's teaching you:
+1. **How to work with constraints** (only certain operations allowed)
+2. **How to optimize** (minimize moves)
+3. **How to think algorithmically** (step-by-step problem solving)
+4. **How to test systematically** (verify your solution works)
 
-**Stack in Go**:
-```go
-// Using slice as stack
-stack := []int{}
+### The Big Question
+**"How do I sort numbers when I can only use these 11 operations?"**
 
-// Push
-stack = append(stack, 5)
-
-// Pop
-top := stack[len(stack)-1]
-stack = stack[:len(stack)-1]
-
-// Peek (look at top without removing)
-top := stack[len(stack)-1]
-```
-
-### 2. **Sorting Algorithms Basics**
-You should understand:
-- **Bubble Sort**: Compare and swap neighbors
-- **Selection Sort**: Find minimum, place it
-- **Insertion Sort**: Insert element in sorted position
-- **Quick Sort**: Partition and recursion
-- **Merge Sort**: Divide and conquer
-
-**But here's the catch**: These won't work directly! You can only use the allowed operations.
-
-### 3. **Algorithm Complexity**
-- **Time Complexity**: How operations grow with input size
-- **O(n)**: Linear - operations proportional to n
-- **O(n²)**: Quadratic - operations grow with n²
-- **O(n log n)**: Efficient sorting algorithms
-
-### 4. **Command-Line Arguments in Go**
-```go
-import "os"
-
-args := os.Args[1:]  // Get arguments (skip program name)
-```
-
-### 5. **String to Int Conversion**
-```go
-import "strconv"
-
-num, err := strconv.Atoi("123")
-if err != nil {
-    // Handle error
-}
-```
+Don't rush to code. First, understand the problem deeply.
 
 ---
 
-## 🎮 Understanding the Operations
+## 📚 Phase 1: Understanding (NO CODE YET!)
 
-### **Available Operations**
+### Step 1: Play With Stacks on Paper
 
-**Push Operations**:
+**Activity**: Get two pieces of paper. Label them "Stack A" and "Stack B".
+
+Write these numbers on small pieces of paper: 3, 1, 2
+
+Put them on Stack A (3 on top).
+
+**Now try**:
+- What happens if you "sa" (swap first two)?
+- What happens if you "ra" (rotate)?
+- What happens if you "pb" (push to B)?
+
+**Spend 30 minutes** trying different operations. Feel how stacks work.
+
+**Questions to answer for yourself**:
+- How do I get the smallest number to the top?
+- How do I get the largest number to the bottom?
+- When should I use Stack B?
+
+### Step 2: Understanding Each Operation
+
+For EACH of the 11 operations, you need to understand:
+- What it does physically to the stack
+- When it would be useful
+- What problem it solves
+
+**Exercise**: 
+Draw "before and after" for each operation. Do this by hand.
+
+Example format (you do the rest):
 ```
-pa (push a): Take top of b, put on top of a
-pb (push b): Take top of a, put on top of b
-
-Before:     After pa:    After pb:
- 2  3        3            5  2
- 5  7        2  7         9  3
- 9           5  9            7
- = =         = =          = =
- a  b        a  b         a  b
-```
-
-**Swap Operations**:
-```
-sa (swap a): Swap first two elements of a
-sb (swap b): Swap first two elements of b
-ss: Do both sa and sb
-
-Before:     After sa:
- 2           5
- 5           2
- 9           9
- =           =
- a           a
-```
-
-**Rotate Operations** (shift up):
-```
-ra (rotate a): First element becomes last
-rb (rotate b): First element becomes last
-rr: Do both ra and rb
-
-Before:     After ra:
- 2           5
- 5           9
- 9           2
- =           =
- a           a
+Operation: sa (swap first two of stack a)
+Before:     After:
+[5]         [3]
+[3]         [5]
+[1]         [1]
 ```
 
-**Reverse Rotate Operations** (shift down):
-```
-rra (reverse rotate a): Last element becomes first
-rrb (reverse rotate b): Last element becomes first  
-rrr: Do both rra and rrb
-
-Before:     After rra:
- 2           9
- 5           2
- 9           5
- =           =
- a           a
-```
+**Don't move to code until you can explain what each operation does in your own words.**
 
 ---
 
-## 🧠 Understanding the Problem
+## 🧠 Phase 2: Problem Decomposition
 
-### **Goal**
-Sort stack `a` in ascending order (smallest on top) with minimum operations.
+### The Wrong Approach
+❌ "I'll just start coding the checker program"
+❌ "Let me look for a sorting algorithm online"
+❌ "I'll implement all operations first"
 
-### **Constraints**
-- Only use the 11 allowed operations
-- Can use stack `b` as helper
-- Must minimize operation count
+### The Right Approach
+✅ "What's the simplest version of this problem?"
+✅ "Can I solve it for 2 numbers first?"
+✅ "What patterns do I notice?"
 
-### **Example Walkthrough**
+### Start Small: The 2-Element Case
 
-**Input**: `"2 1 3 6 5 8"`
+**Question**: You have two numbers in Stack A. How do you sort them?
 
+**Don't code yet!** Think through these questions:
+1. How many possibilities are there? (List them)
+2. For each possibility, what operations do you need?
+3. What's the maximum operations needed?
+
+**Write your answer in plain English** before touching Go.
+
+Example thinking process:
 ```
-Initial:
- 2
- 1
- 3
- 6
- 5
- 8
- = =
- a b
+If Stack A has [2, 1] (2 on top, 1 below):
+- Problem: 2 > 1, but 1 should be on top
+- Solution idea: I need to swap them
+- Operation: "sa"
+- Result: [1, 2] ✓
 
-Goal:
- 1
- 2
- 3
- 5
- 6
- 8
- = =
- a b
+If Stack A has [1, 2]:
+- Already sorted!
+- Operations needed: 0
 ```
 
-**One Solution**:
-```
-1. pb    (push 2 to b)
-2. pb    (push 1 to b)
-3. ra    (rotate a: 3→6→5→8→3)
-4. sa    (swap 6 and 3)
-5. rrr   (reverse rotate both)
-6. pa    (push 1 back)
-7. pa    (push 2 back)
-```
+**Your turn**: Write out the logic for 2 elements completely before coding.
 
 ---
 
-## 🛠️ Step-by-Step Implementation Guide
+### Next: The 3-Element Case
 
-### **Phase 1: Data Structures** 📦
+**Challenge**: Can you sort 3 numbers with maximum 3 operations?
 
-#### Step 1: Define Stack Structure
-```go
-type Stack struct {
-    data []int
-}
+**Don't code yet!** Answer these:
+1. How many ways can 3 numbers be arranged? (List all possibilities)
+2. For each arrangement, what's the path to sorted?
+3. What patterns do you see?
 
-func NewStack() *Stack {
-    return &Stack{
-        data: make([]int, 0),
-    }
-}
+**Example thinking** (you complete the rest):
+```
+Possibility 1: [1, 2, 3] - Already sorted, 0 operations
+Possibility 2: [1, 3, 2] - What operations get us to [1, 2, 3]?
+  - Idea 1: ?
+  - Idea 2: ?
+  - Best solution: ?
 
-func (s *Stack) Push(value int) {
-    s.data = append(s.data, value)
-}
-
-func (s *Stack) Pop() (int, error) {
-    if len(s.data) == 0 {
-        return 0, errors.New("stack is empty")
-    }
-    value := s.data[len(s.data)-1]
-    s.data = s.data[:len(s.data)-1]
-    return value, nil
-}
-
-func (s *Stack) Peek() (int, error) {
-    if len(s.data) == 0 {
-        return 0, errors.New("stack is empty")
-    }
-    return s.data[len(s.data)-1], nil
-}
-
-func (s *Stack) Size() int {
-    return len(s.data)
-}
-
-func (s *Stack) IsEmpty() bool {
-    return len(s.data) == 0
-}
+Continue for all 6 possibilities...
 ```
 
-**Test Your Stack**:
-```go
-func TestStack() {
-    s := NewStack()
-    s.Push(1)
-    s.Push(2)
-    s.Push(3)
-    
-    top, _ := s.Pop()  // Should be 3
-    fmt.Println(top)
-}
-```
+**Key Insight**: There are only 6 ways to arrange 3 numbers. You can handle each case!
 
 ---
 
-#### Step 2: Create Stack Operations
-```go
-type StackPair struct {
-    A *Stack
-    B *Stack
-}
+## 🔍 Phase 3: Research & Learning
 
-func NewStackPair() *StackPair {
-    return &StackPair{
-        A: NewStack(),
-        B: NewStack(),
-    }
-}
-```
+### What Do You Need to Learn?
 
-**Implement Each Operation**:
+**For the Checker Program**, you need to understand:
+1. How to read from stdin (research: "Go read from standard input")
+2. How to store a list of numbers (research: "Go slices")
+3. How to check if a list is sorted (think: how would YOU check?)
 
-**Push Operations**:
-```go
-func (sp *StackPair) Pa() {
-    // Push from B to A
-    if !sp.B.IsEmpty() {
-        value, _ := sp.B.Pop()
-        sp.A.Push(value)
-    }
-}
+**For the Push-Swap Program**, you need to understand:
+1. Sorting algorithms (research: "types of sorting algorithms")
+2. Why normal sorting won't work here (think: what's different?)
+3. How to optimize (research: "algorithm complexity")
 
-func (sp *StackPair) Pb() {
-    // Push from A to B
-    if !sp.A.IsEmpty() {
-        value, _ := sp.A.Pop()
-        sp.B.Push(value)
-    }
-}
-```
+### Research Tasks (Do These Before Coding!)
 
-**Swap Operations**:
-```go
-func (sp *StackPair) Sa() {
-    // Swap first two elements of A
-    if sp.A.Size() >= 2 {
-        first, _ := sp.A.Pop()
-        second, _ := sp.A.Pop()
-        sp.A.Push(first)
-        sp.A.Push(second)
-    }
-}
+**Task 1**: Read about these sorting algorithms:
+- Bubble Sort
+- Insertion Sort  
+- Quick Sort
 
-func (sp *StackPair) Sb() {
-    // Swap first two elements of B
-    if sp.B.Size() >= 2 {
-        first, _ := sp.B.Pop()
-        second, _ := sp.B.Pop()
-        sp.B.Push(first)
-        sp.B.Push(second)
-    }
-}
+**Question**: Why can't you just use these directly? What's different about your constraints?
 
-func (sp *StackPair) Ss() {
-    sp.Sa()
-    sp.Sb()
-}
-```
+**Task 2**: Research "stack data structure"
+- What is LIFO?
+- What operations do stacks support?
+- How do stacks work in memory?
 
-**Rotate Operations**:
-```go
-func (sp *StackPair) Ra() {
-    // Rotate A (first becomes last)
-    if sp.A.Size() >= 2 {
-        // Remove from top
-        value, _ := sp.A.Pop()
-        
-        // Shift all elements up
-        temp := make([]int, sp.A.Size())
-        copy(temp, sp.A.data)
-        
-        // Clear stack
-        sp.A.data = make([]int, 0)
-        
-        // Put value at bottom
-        sp.A.Push(value)
-        
-        // Add rest back
-        for _, v := range temp {
-            sp.A.Push(v)
-        }
-    }
-}
-```
+**Task 3**: Learn about algorithm complexity
+- What does O(n) mean?
+- What does O(n²) mean?
+- Why does it matter?
 
-**Better Rotate Implementation** (more efficient):
-```go
-func (sp *StackPair) Ra() {
-    if sp.A.Size() >= 2 {
-        // Take top element
-        top := sp.A.data[len(sp.A.data)-1]
-        
-        // Shift everything
-        sp.A.data = sp.A.data[:len(sp.A.data)-1]
-        
-        // Insert at bottom
-        sp.A.data = append([]int{top}, sp.A.data...)
-    }
-}
-
-func (sp *StackPair) Rb() {
-    if sp.B.Size() >= 2 {
-        top := sp.B.data[len(sp.B.data)-1]
-        sp.B.data = sp.B.data[:len(sp.B.data)-1]
-        sp.B.data = append([]int{top}, sp.B.data...)
-    }
-}
-
-func (sp *StackPair) Rr() {
-    sp.Ra()
-    sp.Rb()
-}
-```
-
-**Reverse Rotate Operations**:
-```go
-func (sp *StackPair) Rra() {
-    if sp.A.Size() >= 2 {
-        // Take bottom element
-        bottom := sp.A.data[0]
-        
-        // Remove it
-        sp.A.data = sp.A.data[1:]
-        
-        // Add to top
-        sp.A.data = append(sp.A.data, bottom)
-    }
-}
-
-func (sp *StackPair) Rrb() {
-    if sp.B.Size() >= 2 {
-        bottom := sp.B.data[0]
-        sp.B.data = sp.B.data[1:]
-        sp.B.data = append(sp.B.data, bottom)
-    }
-}
-
-func (sp *StackPair) Rrr() {
-    sp.Rra()
-    sp.Rrb()
-}
-```
+**Write a summary** (in your own words) of what you learned. Don't copy definitions.
 
 ---
 
-### **Phase 2: Input Parsing** 📥
+## 🛠️ Phase 4: Building Blocks (NOW You Can Code)
 
-#### Step 3: Parse Command-Line Arguments
-```go
-func ParseArguments(args []string) ([]int, error) {
-    if len(args) == 0 {
-        return []int{}, nil
-    }
-    
-    // Join all arguments
-    input := strings.Join(args, " ")
-    
-    // Split by spaces
-    parts := strings.Fields(input)
-    
-    numbers := make([]int, 0)
-    seen := make(map[int]bool)
-    
-    for _, part := range parts {
-        // Convert to int
-        num, err := strconv.Atoi(part)
-        if err != nil {
-            return nil, fmt.Errorf("invalid input")
-        }
-        
-        // Check for duplicates
-        if seen[num] {
-            return nil, fmt.Errorf("duplicate value")
-        }
-        seen[num] = true
-        
-        numbers = append(numbers, num)
-    }
-    
-    return numbers, nil
-}
-```
+### Building Block 1: Stack Implementation
 
-**Test Cases**:
-```go
-// Valid
-nums, _ := ParseArguments([]string{"2", "1", "3"})
-// nums = [2, 1, 3]
+**Questions to answer BEFORE coding**:
+1. How will you represent a stack in Go? (What data type?)
+2. What functions does a stack need?
+3. How do you handle "pop from empty stack"?
 
-// Valid (single string)
-nums, _ := ParseArguments([]string{"2 1 3 6 5 8"})
-// nums = [2, 1, 3, 6, 5, 8]
+**What you need to implement** (figure out HOW):
+- A way to store numbers
+- A way to add a number (push)
+- A way to remove a number (pop)
+- A way to see the top number (peek)
+- A way to check if empty
 
-// Invalid (not a number)
-_, err := ParseArguments([]string{"0", "one", "2"})
-// err != nil
+**Don't look for code examples yet!** Try implementing based on:
+- Go slices documentation
+- Your understanding of what a stack does
 
-// Invalid (duplicate)
-_, err := ParseArguments([]string{"1", "2", "2", "3"})
-// err != nil
-```
+**Test Strategy**: 
+Write tests BEFORE implementation. What should happen if:
+- You push 3 numbers, then pop them?
+- You try to pop from empty stack?
+- You peek at empty stack?
 
 ---
 
-#### Step 4: Initialize Stacks
-```go
-func InitializeStacks(numbers []int) *StackPair {
-    sp := NewStackPair()
-    
-    // Push numbers to stack A in reverse order
-    // (so first number is on top)
-    for i := len(numbers) - 1; i >= 0; i-- {
-        sp.A.Push(numbers[i])
-    }
-    
-    return sp
-}
+### Building Block 2: The 11 Operations
+
+**For EACH operation**, you need to think through:
+
+**Example thinking process for "sa" (swap first two of stack a)**:
+
+Questions:
+1. What if stack has 0 elements? (What should happen?)
+2. What if stack has 1 element? (Can you swap?)
+3. What if stack has 2+ elements? (How do you swap top two?)
+
+Algorithm in plain English:
+```
+To swap first two elements of a stack:
+1. Check if stack has at least 2 elements
+2. If not, do nothing (or return error?)
+3. If yes:
+   - Remove the first element, store it
+   - Remove the second element, store it  
+   - Put the second element back (it's now first)
+   - Put the first element back (it's now second)
 ```
 
-**Example**:
-```go
-numbers := []int{2, 1, 3, 6, 5, 8}
-sp := InitializeStacks(numbers)
+**Your turn**: Write the algorithm in English for:
+- pa (push from b to a)
+- ra (rotate a)
+- rra (reverse rotate a)
 
-// Stack A will be (top to bottom):
-// 2, 1, 3, 6, 5, 8
-```
+**Only after writing algorithms in English**, then translate to Go.
 
 ---
 
-### **Phase 3: Checker Program** ✅
+### Building Block 3: Checker Program
 
-#### Step 5: Build the Checker
-The checker is simpler - it just executes instructions and checks if sorted.
+**What does the checker need to do?** (Answer in English first)
+1. ?
+2. ?
+3. ?
 
-```go
-// checker/main.go
-func main() {
-    args := os.Args[1:]
-    
-    // Parse arguments
-    numbers, err := ParseArguments(args)
-    if err != nil {
-        fmt.Fprintln(os.Stderr, "Error")
-        return
-    }
-    
-    // If no arguments, exit
-    if len(numbers) == 0 {
-        return
-    }
-    
-    // Initialize stacks
-    sp := InitializeStacks(numbers)
-    
-    // Read and execute instructions
-    scanner := bufio.NewScanner(os.Stdin)
-    for scanner.Scan() {
-        instruction := scanner.Text()
-        
-        err := ExecuteInstruction(sp, instruction)
-        if err != nil {
-            fmt.Fprintln(os.Stderr, "Error")
-            return
-        }
-    }
-    
-    // Check if sorted
-    if IsSorted(sp) {
-        fmt.Println("OK")
-    } else {
-        fmt.Println("KO")
-    }
-}
+**Break it into steps**:
 ```
+Step 1: Parse input arguments
+  - What could go wrong? (non-numbers? duplicates?)
+  - How to check for errors?
+  
+Step 2: Create stacks from input
+  - Which stack do numbers start in?
+  - What order?
+
+Step 3: Read instructions from stdin
+  - How do you read line by line?
+  - What if instruction is invalid?
+
+Step 4: Execute each instruction
+  - How do you match string to operation?
+  - What if something goes wrong?
+
+Step 5: Check if sorted
+  - What does "sorted" mean?
+  - What must be true about stack A?
+  - What must be true about stack B?
+```
+
+**Implement one step at a time. Test each step before moving to next.**
 
 ---
 
-#### Step 6: Execute Instructions
-```go
-func ExecuteInstruction(sp *StackPair, instruction string) error {
-    switch instruction {
-    case "pa":
-        sp.Pa()
-    case "pb":
-        sp.Pb()
-    case "sa":
-        sp.Sa()
-    case "sb":
-        sp.Sb()
-    case "ss":
-        sp.Ss()
-    case "ra":
-        sp.Ra()
-    case "rb":
-        sp.Rb()
-    case "rr":
-        sp.Rr()
-    case "rra":
-        sp.Rra()
-    case "rrb":
-        sp.Rrb()
-    case "rrr":
-        sp.Rrr()
-    default:
-        return fmt.Errorf("invalid instruction: %s", instruction)
-    }
-    return nil
-}
-```
+## 🎯 Phase 5: Solving Strategy
+
+### The Wrong Way to Approach Sorting
+
+❌ "I'll just try random operations until it's sorted"
+❌ "I'll implement bubble sort with these operations"
+❌ "I'll guess and hope it works"
+
+### The Right Way to Think
+
+✅ Start with what you CAN solve (2, 3 elements)
+✅ Build up to harder problems (4, 5 elements)
+✅ Look for patterns
+✅ Optimize later
 
 ---
 
-#### Step 7: Check if Sorted
-```go
-func IsSorted(sp *StackPair) bool {
-    // Stack B must be empty
-    if !sp.B.IsEmpty() {
-        return false
-    }
-    
-    // Stack A must be sorted in ascending order
-    // (Remember: top is smallest)
-    data := sp.A.data
-    
-    for i := len(data) - 1; i > 0; i-- {
-        if data[i] > data[i-1] {
-            return false
-        }
-    }
-    
-    return true
-}
+### Strategy for 3 Elements: Decision Tree Approach
+
+**Concept**: There are only 6 arrangements. Handle each one.
+
+**Your task**: Create a decision tree on paper.
+
+```
+Start with 3 numbers in stack A.
+Look at the arrangement.
+
+Is it [1,2,3]? → Done! (0 operations)
+Is it [1,3,2]? → What operations? (You figure out)
+Is it [2,1,3]? → What operations? (You figure out)
+Is it [2,3,1]? → What operations? (You figure out)
+Is it [3,1,2]? → What operations? (You figure out)
+Is it [3,2,1]? → What operations? (You figure out)
 ```
 
-**Test Checker**:
+**Exercise**: Work out ALL 6 cases on paper before coding.
+
+**Optimization question**: What's the maximum operations needed for 3 elements? (Prove it!)
+
+---
+
+### Strategy for 4-5 Elements: Simplification Approach
+
+**Key Insight**: Can you turn a 5-element problem into a 3-element problem?
+
+**Guiding questions**:
+1. What if you push some numbers to stack B?
+2. Could you sort the remaining numbers in stack A?
+3. Then bring numbers back from stack B?
+
+**Think through this scenario**:
+```
+Stack A: [5, 2, 4, 1, 3]
+Goal: Sorted in ascending order
+
+Idea: What if you push the smallest numbers to B?
+- Find smallest (1)
+- Move it to top of A (how?)
+- Push to B
+- Repeat for next smallest (2)
+Now A has [5, 4, 3] and B has [1, 2]
+- Sort A (3 elements - you can do this!)
+- Push back from B
+
+Does this work? Try it on paper!
+```
+
+**Your task**: 
+1. Test this strategy on paper with different 5-element arrangements
+2. Count operations
+3. Can you do better than 12 operations?
+
+---
+
+### Strategy for 100 Elements: Research Needed
+
+**You cannot figure this out by yourself easily.** This is where research comes in.
+
+**Research Topics**:
+1. "Radix sort algorithm"
+2. "Bucket sort"
+3. "Divide and conquer sorting"
+4. "Chunk-based sorting"
+
+**Key concept to understand**: "Normalization" or "Ranking"
+- Instead of sorting actual values, sort their ranks
+- Example: [42, 7, 105, 3] → ranks: [2, 1, 3, 0]
+
+**Questions to research and answer**:
+1. What does it mean to divide numbers into "chunks"?
+2. How could chunks help with sorting?
+3. What's the benefit of using stack B strategically?
+
+**After research, develop YOUR algorithm on paper**:
+```
+Your Algorithm Pseudocode (write this yourself):
+1. ?
+2. ?
+3. ?
+```
+
+**Test your algorithm on paper with 10 numbers before coding!**
+
+---
+
+## 🧪 Phase 6: Testing Strategy
+
+### Test Small Before Big
+
+**Test Progression**:
+```
+1. Test with 2 elements
+   - Try: [1,2], [2,1]
+   - Verify: operations correct, count is minimal
+
+2. Test with 3 elements
+   - Try: all 6 arrangements
+   - Verify: all work, max 3 operations
+
+3. Test with 5 elements
+   - Try: 10 random arrangements
+   - Verify: all work, max 12 operations
+
+4. Test with 100 elements
+   - Try: several random sets
+   - Verify: all work, less than 700 operations
+```
+
+### How to Generate Test Cases
+
+**Don't test randomly!** Think about:
+- Best case (already sorted)
+- Worst case (reverse sorted)
+- Random cases
+- Edge cases (duplicates should error!)
+
+**Test command pattern**:
 ```bash
-echo -e "sa\nrra\npb" | ./checker "3 2 1 0"
-# Should output: KO
+# Create test input
+ARG="3 2 1"; ./push-swap "$ARG"
 
-echo -e "rra\npb\nsa\nrra\npa" | ./checker "3 2 1 0"
+# Verify with checker
+ARG="3 2 1"; ./push-swap "$ARG" | ./checker "$ARG"
+
 # Should output: OK
 ```
 
 ---
 
-### **Phase 4: Sorting Strategies** 🧩
+## 🔍 Phase 7: Debugging Your Logic
 
-Now the challenging part - creating an efficient sorting algorithm!
+### When It Doesn't Work
 
-#### Step 8: Strategy for Small Numbers (2-3 elements)
+**Don't immediately look for solutions!** Debug systematically:
 
-**Sort 2 Elements**:
-```go
-func Sort2(sp *StackPair, ops *[]string) {
-    // If first > second, swap
-    if sp.A.data[len(sp.A.data)-1] > sp.A.data[len(sp.A.data)-2] {
-        sp.Sa()
-        *ops = append(*ops, "sa")
-    }
-}
-```
+**Step 1: Isolate the Problem**
+- Does it fail on all inputs or specific ones?
+- What's the smallest input that fails?
+- Can you reproduce the bug consistently?
 
-**Sort 3 Elements**:
-```go
-func Sort3(sp *StackPair, ops *[]string) {
-    // Get the three values (top to bottom)
-    size := sp.A.Size()
-    a := sp.A.data[size-1]  // top
-    b := sp.A.data[size-2]  // middle
-    c := sp.A.data[size-3]  // bottom
-    
-    // Find which is smallest/largest
-    smallest := min(a, min(b, c))
-    largest := max(a, max(b, c))
-    
-    // Different cases
-    if a == smallest {
-        // Smallest is on top
-        if b > c {
-            sp.Sa()
-            sp.Ra()
-            sp.Sa()
-            sp.Rra()
-            *ops = append(*ops, "sa", "ra", "sa", "rra")
-        }
-        // Already sorted
-    } else if a == largest {
-        // Largest is on top
-        sp.Ra()
-        *ops = append(*ops, "ra")
-        if b > c {
-            sp.Sa()
-            *ops = append(*ops, "sa")
-        }
-    } else {
-        // Middle value on top
-        if b == smallest {
-            sp.Sa()
-            *ops = append(*ops, "sa")
-        } else {
-            sp.Rra()
-            *ops = append(*ops, "rra")
-        }
-    }
-}
-```
+**Step 2: Trace Execution**
+- Add print statements to see stack states
+- After each operation, print both stacks
+- Compare expected vs actual
+
+**Step 3: Check Your Assumptions**
+- Did you understand the operation correctly?
+- Are you modifying the right stack?
+- Are you checking conditions properly?
+
+### Common Logic Errors (Don't Copy, Learn From!)
+
+**Pattern 1: Off-by-one errors**
+Question: Are you counting from 0 or 1?
+
+**Pattern 2: Empty stack operations**
+Question: Did you check if stack is empty before popping?
+
+**Pattern 3: Wrong stack modified**
+Question: Are you operating on A when you meant B?
+
+**Pattern 4: Incorrect rotation logic**
+Question: Did you understand what "rotate" means?
 
 ---
 
-#### Step 9: Strategy for Medium Numbers (4-5 elements)
+## 💭 Phase 8: Optimization Thinking
 
-**Sort 4-5 Elements**:
-```go
-func SortSmall(sp *StackPair, ops *[]string) {
-    size := sp.A.Size()
-    
-    // Push smallest to B
-    for size > 3 {
-        // Find position of smallest
-        minPos := FindMinPosition(sp.A)
-        
-        // Rotate to bring smallest to top
-        if minPos <= size/2 {
-            // Closer to top, rotate forward
-            for i := 0; i < minPos; i++ {
-                sp.Ra()
-                *ops = append(*ops, "ra")
-            }
-        } else {
-            // Closer to bottom, reverse rotate
-            for i := minPos; i < size; i++ {
-                sp.Rra()
-                *ops = append(*ops, "rra")
-            }
-        }
-        
-        // Push to B
-        sp.Pb()
-        *ops = append(*ops, "pb")
-        size--
-    }
-    
-    // Sort remaining 3 in A
-    Sort3(sp, ops)
-    
-    // Push back from B
-    for !sp.B.IsEmpty() {
-        sp.Pa()
-        *ops = append(*ops, "pa")
-    }
-}
+### First Make It Work, Then Make It Fast
 
-func FindMinPosition(s *Stack) int {
-    minVal := s.data[0]
-    minPos := 0
-    
-    for i, val := range s.data {
-        if val < minVal {
-            minVal = val
-            minPos = i
-        }
-    }
-    
-    // Return position from top
-    return len(s.data) - 1 - minPos
-}
-```
+**Step 1: Get a working solution** (even if slow)
+**Step 2: Measure operations** (how many for 100 elements?)
+**Step 3: Find bottlenecks** (where are extra operations?)
+**Step 4: Optimize** (reduce unnecessary operations)
+
+### Questions to Ask Yourself
+
+**For operation count**:
+1. Am I doing unnecessary rotations?
+2. Am I moving numbers back and forth?
+3. Could I combine operations?
+4. Am I using stack B effectively?
+
+**For algorithm choice**:
+1. Why did I choose this approach?
+2. Are there better algorithms for constrained sorting?
+3. What's the theoretical minimum operations?
+4. How close am I to the minimum?
+
+### Optimization Ideas to Research
+
+**Don't implement these immediately!** First understand the concept:
+
+1. **Operation compression**: 
+   - Can "sa" followed by "sb" become "ss"?
+   - Think: how to detect these patterns?
+
+2. **Reverse operations canceling**:
+   - Does "ra" followed by "rra" do nothing?
+   - Think: how to detect and remove?
+
+3. **Better algorithms**:
+   - Research: "Turk algorithm for push-swap"
+   - Research: "Greedy algorithms for stack sorting"
+   - Understand concept, then implement YOUR version
 
 ---
 
-#### Step 10: Strategy for Large Numbers (100+ elements)
+## 📝 Learning Checklist
 
-For large numbers, we use a **Chunk/Radix-based approach**:
+### Before You Start Coding
 
-**Concept**:
-1. Divide numbers into chunks
-2. Push chunks to B in order
-3. Push back to A in sorted order
+- [ ] I can explain what each operation does in my own words
+- [ ] I've worked through 2-3 element cases on paper
+- [ ] I understand what LIFO means
+- [ ] I know what "sorted" means for this project
+- [ ] I've researched sorting algorithms
 
-**Implementation**:
-```go
-func SortLarge(sp *StackPair, ops *[]string) {
-    size := sp.A.Size()
-    
-    // Calculate chunk size
-    chunkSize := calculateChunkSize(size)
-    
-    // Normalize values (give them ranks)
-    normalized := normalizeValues(sp.A.data)
-    
-    // Push to B in chunks
-    pushed := 0
-    chunk := 0
-    
-    for !sp.A.IsEmpty() {
-        topValue := sp.A.data[len(sp.A.data)-1]
-        normalizedValue := normalized[topValue]
-        
-        // Check if in current chunk range
-        if normalizedValue <= (chunk+1)*chunkSize {
-            // Push to B
-            sp.Pb()
-            *ops = append(*ops, "pb")
-            pushed++
-            
-            // Rotate B to keep larger values near top
-            if sp.B.Size() > 1 && 
-               normalized[sp.B.data[len(sp.B.data)-1]] < size/2 {
-                sp.Rb()
-                *ops = append(*ops, "rb")
-            }
-            
-            // Move to next chunk when current is full
-            if pushed >= (chunk+1)*chunkSize {
-                chunk++
-            }
-        } else {
-            // Not in range, rotate A
-            sp.Ra()
-            *ops = append(*ops, "ra")
-        }
-    }
-    
-    // Push back to A in sorted order
-    pushBackSorted(sp, ops, normalized)
-}
+### After Basic Implementation
 
-func calculateChunkSize(size int) int {
-    if size <= 100 {
-        return size / 5
-    } else {
-        return size / 11
-    }
-}
-```
+- [ ] My checker correctly validates operations
+- [ ] I can sort 3 elements with ≤3 operations
+- [ ] I can sort 5 elements with ≤12 operations
+- [ ] My code handles errors (duplicates, invalid input)
+- [ ] I've tested edge cases
+
+### For Large Numbers
+
+- [ ] I've researched chunk-based approaches
+- [ ] I understand the concept of normalization
+- [ ] I've tested my algorithm on paper first
+- [ ] I can sort 100 elements with <700 operations
+- [ ] I've verified with checker multiple times
+
+### Code Quality
+
+- [ ] My code is readable (clear variable names)
+- [ ] I have comments explaining WHY, not what
+- [ ] I've organized code into logical functions
+- [ ] Each function does ONE thing
+- [ ] I've tested each function independently
 
 ---
 
-#### Step 11: Normalize Values (Ranking)
-```go
-func normalizeValues(data []int) map[int]int {
-    // Create sorted copy
-    sorted := make([]int, len(data))
-    copy(sorted, data)
-    sort.Ints(sorted)
-    
-    // Map each value to its rank
-    normalized := make(map[int]int)
-    for i, val := range sorted {
-        normalized[val] = i
-    }
-    
-    return normalized
-}
-```
+## 🎓 What You Should Learn (Not Copy!)
 
-**Example**:
-```
-Input:  [42, 13, 7, 99, 5]
-Sorted: [5, 7, 13, 42, 99]
-Ranks:  5→0, 7→1, 13→2, 42→3, 99→4
-```
+### Go Concepts to Research and Understand
 
----
+**Don't just find code examples!** Read documentation and understand:
 
-#### Step 12: Push Back Sorted
-```go
-func pushBackSorted(sp *StackPair, ops *[]string, normalized map[int]int) {
-    size := sp.B.Size()
-    
-    for i := size - 1; i >= 0; i-- {
-        // Find largest value in B
-        maxPos := findMaxPosition(sp.B)
-        
-        // Rotate to bring it to top
-        if maxPos <= sp.B.Size()/2 {
-            for j := 0; j < maxPos; j++ {
-                sp.Rb()
-                *ops = append(*ops, "rb")
-            }
-        } else {
-            for j := maxPos; j < sp.B.Size(); j++ {
-                sp.Rrb()
-                *ops = append(*ops, "rrb")
-            }
-        }
-        
-        // Push to A
-        sp.Pa()
-        *ops = append(*ops, "pa")
-    }
-}
+1. **Slices**
+   - Read: Go blog on slices
+   - Understand: how they grow, how to manipulate
+   - Practice: create, append, remove elements
 
-func findMaxPosition(s *Stack) int {
-    maxVal := s.data[0]
-    maxPos := 0
-    
-    for i, val := range s.data {
-        if val > maxVal {
-            maxVal = val
-            maxPos = i
-        }
-    }
-    
-    return len(s.data) - 1 - maxPos
-}
-```
+2. **Reading stdin**
+   - Read: bufio.Scanner documentation
+   - Understand: how to read line by line
+   - Practice: simple program that echoes stdin
+
+3. **String to Int conversion**
+   - Read: strconv package
+   - Understand: what errors can occur
+   - Practice: convert with error handling
+
+4. **Command-line arguments**
+   - Read: os.Args documentation
+   - Understand: what os.Args[0] is
+   - Practice: program that prints all arguments
+
+### Algorithm Concepts to Research
+
+**Read about these, then think how they apply**:
+
+1. **Sorting Algorithm Comparison**
+   - Read about bubble, insertion, quick, merge sort
+   - Understand time complexity of each
+   - Question: Why can't you use these directly?
+
+2. **Stack-Based Algorithms**
+   - Research: stack-based sorting
+   - Understand: when stacks are useful
+   - Question: How is your problem different?
+
+3. **Optimization Techniques**
+   - Research: greedy algorithms
+   - Research: divide and conquer
+   - Question: Which applies to your problem?
 
 ---
 
-### **Phase 5: Push-Swap Program** 🎯
+## 🤔 Thought Exercises (No Coding!)
 
-#### Step 13: Main Push-Swap Logic
-```go
-// push-swap/main.go
-func main() {
-    args := os.Args[1:]
-    
-    // Parse arguments
-    numbers, err := ParseArguments(args)
-    if err != nil {
-        fmt.Fprintln(os.Stderr, "Error")
-        return
-    }
-    
-    // If no arguments or already sorted, exit
-    if len(numbers) == 0 {
-        return
-    }
-    
-    if isAlreadySorted(numbers) {
-        return
-    }
-    
-    // Initialize stacks
-    sp := InitializeStacks(numbers)
-    
-    // Solve
-    operations := SolveOptimized(sp)
-    
-    // Print operations
-    for _, op := range operations {
-        fmt.Println(op)
-    }
-}
-```
+### Exercise 1: Manual Sorting
+Take these numbers: [5, 2, 8, 1, 9]
+
+Using only the 11 operations, write out step-by-step how to sort them.
+Track the state after each operation.
+
+**Goal**: Feel the problem before coding it.
+
+### Exercise 2: Operation Analysis
+For each operation, answer:
+- When is this operation useful?
+- When should you NOT use it?
+- Can it be combined with others?
+
+### Exercise 3: Strategy Comparison
+Compare two strategies on paper:
+- Strategy A: Push all to B, then back sorted
+- Strategy B: Use B for chunks
+
+Which is better? Why? Prove it with an example.
+
+### Exercise 4: Edge Case Discovery
+List every way the program could fail:
+- Invalid inputs
+- Empty inputs
+- Already sorted
+- Reverse sorted
+- Duplicates
+- Non-numbers
+- Very large numbers
+
+How should each be handled?
 
 ---
 
-#### Step 14: Optimized Solver
-```go
-func SolveOptimized(sp *StackPair) []string {
-    ops := make([]string, 0)
-    size := sp.A.Size()
-    
-    switch {
-    case size == 2:
-        Sort2(sp, &ops)
-    case size == 3:
-        Sort3(sp, &ops)
-    case size <= 5:
-        SortSmall(sp, &ops)
-    default:
-        SortLarge(sp, &ops)
-    }
-    
-    return ops
-}
+## 🎯 Your Implementation Plan
 
-func isAlreadySorted(numbers []int) bool {
-    for i := 0; i < len(numbers)-1; i++ {
-        if numbers[i] > numbers[i+1] {
-            return false
-        }
-    }
-    return true
-}
-```
+### Week 1: Foundation
+- [ ] Understand all operations deeply (paper exercises)
+- [ ] Implement stack data structure
+- [ ] Implement all 11 operations
+- [ ] Test each operation independently
 
----
+### Week 2: Checker & Small Cases
+- [ ] Build checker program
+- [ ] Test checker with manual inputs
+- [ ] Solve 2-element case
+- [ ] Solve 3-element case
+- [ ] Solve 5-element case
 
-### **Phase 6: Optimization** ⚡
+### Week 3: Large Cases
+- [ ] Research chunk-based sorting
+- [ ] Design your algorithm on paper
+- [ ] Implement algorithm
+- [ ] Test with 100 elements
+- [ ] Optimize operation count
 
-#### Step 15: Operation Compression
-```go
-func CompressOperations(ops []string) []string {
-    compressed := make([]string, 0)
-    i := 0
-    
-    for i < len(ops) {
-        // Look for consecutive operations that can be combined
-        if i < len(ops)-1 {
-            curr := ops[i]
-            next := ops[i+1]
-            
-            // Combine sa + sb → ss
-            if curr == "sa" && next == "sb" {
-                compressed = append(compressed, "ss")
-                i += 2
-                continue
-            }
-            
-            // Combine ra + rb → rr
-            if curr == "ra" && next == "rb" {
-                compressed = append(compressed, "rr")
-                i += 2
-                continue
-            }
-            
-            // Combine rra + rrb → rrr
-            if curr == "rra" && next == "rrb" {
-                compressed = append(compressed, "rrr")
-                i += 2
-                continue
-            }
-            
-            // Check for cancellations
-            // ra followed by rra cancels out
-            if (curr == "ra" && next == "rra") ||
-               (curr == "rra" && next == "ra") {
-                i += 2
-                continue
-            }
-        }
-        
-        compressed = append(compressed, ops[i])
-        i++
-    }
-    
-    return compressed
-}
-```
+### Week 4: Polish & Perfect
+- [ ] Test edge cases
+- [ ] Optimize further
+- [ ] Clean up code
+- [ ] Add comprehensive tests
+- [ ] Final verification
 
 ---
 
-### **Phase 7: Testing** 🧪
+## 💡 Hints (Not Solutions!)
 
-#### Step 16: Create Test Suite
-```go
-func TestPushSwap() {
-    tests := []struct {
-        input    []int
-        maxOps   int
-        name     string
-    }{
-        {[]int{2, 1}, 1, "2 elements"},
-        {[]int{2, 1, 3}, 3, "3 elements"},
-        {[]int{5, 4, 3, 2, 1}, 12, "5 elements reverse"},
-        {generateRandom(100), 700, "100 random"},
-    }
-    
-    for _, tt := range tests {
-        sp := InitializeStacks(tt.input)
-        ops := SolveOptimized(sp)
-        
-        // Check operation count
-        if len(ops) > tt.maxOps {
-            fmt.Printf("FAIL %s: %d operations (max %d)\n", 
-                tt.name, len(ops), tt.maxOps)
-        }
-        
-        // Verify solution
-        sp2 := InitializeStacks(tt.input)
-        for _, op := range ops {
-            ExecuteInstruction(sp2, op)
-        }
-        
-        if !IsSorted(sp2) {
-            fmt.Printf("FAIL %s: not sorted!\n", tt.name)
-        }
-    }
-}
-```
+### Hint 1: Stack Representation
+Think: What Go data type behaves like a stack?
+Answer: A slice can work! Top is the END of the slice (why?)
+
+### Hint 2: Operation Efficiency
+Think: If you need smallest number on top, which is faster:
+- Rotating until it reaches top
+- Reverse rotating
+
+Answer: Depends on where the number is! (Think about why)
+
+### Hint 3: Using Stack B
+Think: Stack B is temporary storage. When is it useful?
+Answer: When you want to "set aside" some numbers while working on others
+
+### Hint 4: Optimization
+Think: Can you predict where each number should go?
+Answer: Yes! If you know final positions, you can be strategic about moves
 
 ---
 
-## 📊 Performance Targets
+## 🚫 What NOT To Do
 
-### **Operation Count Limits**
+### DON'T:
+❌ Search for "push-swap solution in Go"
+❌ Copy code from GitHub
+❌ Use AI to write the code for you
+❌ Skip the paper exercises
+❌ Start with 100 elements
+❌ Give up when stuck
 
-| Size | Complexity | Max Operations | Strategy |
-|------|------------|----------------|----------|
-| 2 | O(1) | 1 | Direct swap |
-| 3 | O(1) | 3 | Case analysis |
-| 5 | O(n) | 12 | Push min, sort 3 |
-| 100 | O(n log n) | 700 | Chunk-based |
-| 500 | O(n log n) | 5500 | Optimized chunks |
-
-**Grade Targets**:
-- 100 numbers in < 700 operations: Good
-- 100 numbers in < 550 operations: Excellent
-- 500 numbers in < 5500 operations: Bonus
-
----
-
-## 🐛 Common Issues and Solutions
-
-### Issue 1: Too Many Operations
-**Problem**: Solution uses 1000+ operations for 100 numbers
-**Solution**: Implement chunk-based algorithm, not bubble sort
-
-### Issue 2: Stack Underflow
-**Problem**: Trying to pop from empty stack
-**Solution**: Always check `!stack.IsEmpty()` before operations
-
-### Issue 3: Wrong Sort Direction
-**Problem**: Stack sorted in descending order
-**Solution**: Remember smallest should be on TOP
-
-### Issue 4: Duplicate Detection
-**Problem**: Not catching duplicates
-**Solution**: Use map to track seen values during parsing
-
-### Issue 5: Memory Issues
-**Problem**: Operations list grows too large
-**Solution**: Use efficient data structures, consider operation compression
+### DO:
+✅ Work through problems on paper first
+✅ Understand each operation deeply
+✅ Start with small cases (2, 3 elements)
+✅ Test incrementally
+✅ Ask yourself "why" at each step
+✅ Learn from mistakes
 
 ---
 
-## 📋 Testing Checklist
+## 📚 Recommended Research Path
 
-**Basic Functionality**:
-- [ ] No arguments → no output
-- [ ] Already sorted → no output
-- [ ] Invalid input → "Error"
-- [ ] Duplicates → "Error"
-- [ ] 2 elements sorted correctly
-- [ ] 3 elements sorted correctly
-- [ ] 5 elements < 12 operations
+### Phase 1: Basics (Before Coding)
+1. Read Go slice documentation
+2. Read about stack data structure
+3. Understand LIFO concept
+4. Learn about sorting algorithms
 
-**Checker**:
-- [ ] Accepts valid instructions
-- [ ] Rejects invalid instructions
-- [ ] Outputs "OK" for correct sort
-- [ ] Outputs "KO" for wrong sort
-- [ ] Handles errors properly
+### Phase 2: Implementation (While Coding Basics)
+1. Research Go stdin reading (bufio)
+2. Research string parsing in Go
+3. Learn about Go error handling
+4. Read about testing in Go
 
-**Performance**:
-- [ ] 100 random numbers < 700 operations
-- [ ] Solution verified by checker
-- [ ] Different random sets work
-- [ ] Large numbers handle correctly
+### Phase 3: Advanced (For Large Numbers)
+1. Research "radix sort"
+2. Research "bucket sort"
+3. Look for "stack sorting algorithms"
+4. Read about algorithm optimization
+
+**Important**: Don't just copy algorithms! Understand the CONCEPTS, then apply to your constraints.
 
 ---
 
-## ✅ Submission Checklist
+## 🎓 Final Wisdom
 
-**Code Quality**:
-- [ ] Two executables: push-swap, checker
-- [ ] Clean, readable code
-- [ ] Proper error handling
-- [ ] No memory leaks
-- [ ] Only standard packages
+### This Project is About Learning to Think
 
-**Functionality**:
-- [ ] All operations implemented correctly
-- [ ] Parsing handles all cases
-- [ ] Efficient sorting algorithm
-- [ ] Operations minimized
-- [ ] Checker validates correctly
+**You're not here to finish quickly.**
+**You're here to become a programmer who can solve problems.**
 
-**Testing**:
-- [ ] Unit tests for operations
-- [ ] Test suite for sorting
-- [ ] Edge cases covered
-- [ ] Performance verified
+### The Real Skills You're Building
 
----
+1. **Problem Decomposition**: Breaking big problems into small ones
+2. **Algorithmic Thinking**: Step-by-step logical reasoning
+3. **Constraint Handling**: Solving within limitations
+4. **Optimization**: Making solutions better
+5. **Testing**: Verifying solutions work
+6. **Debugging**: Finding and fixing errors
 
-## 📖 Algorithm Strategies Explained
+**These skills matter more than this specific project.**
 
-### **Why Chunks?**
-Instead of sorting all at once:
-1. Divide into manageable groups
-2. Move groups to B strategically
-3. Rebuild in sorted order
+### When You're Stuck
 
-**Analogy**: Sorting a deck of cards
-- Don't try to sort perfectly in one pass
-- Group cards into ranges
-- Merge groups in order
+1. Go back to paper - trace through manually
+2. Simplify - test with 2 numbers instead of 100
+3. Research the concept - not the code
+4. Take a break - fresh mind sees solutions
+5. Explain problem to someone - talking helps thinking
 
-### **Turk Algorithm** (Advanced)
-Alternative efficient approach:
-1. Calculate "cost" to move each element
-2. Choose cheapest move
-3. Execute and repeat
+### Success Metrics
 
-**Cost Calculation**:
-- Rotations needed in A
-- Rotations needed in B
-- Combined operations (rr, rrr)
+**Bad metric**: "I finished quickly"
+**Good metric**: "I understand how and why it works"
+
+**Bad metric**: "My code works"
+**Good metric**: "I can explain my algorithm to others"
+
+**Bad metric**: "I have a solution"
+**Good metric**: "I learned to think algorithmically"
 
 ---
 
-## 🚀 Pro Tips
+## 🤝 How to Use This Guide
 
-1. **Start Simple**: Get 3-element sort working perfectly
-2. **Test Incrementally**: Test each size separately
-3. **Visualize**: Draw stacks on paper to understand
-4. **Use Checker**: Always verify with checker
-5. **Benchmark**: Track operation counts
-6. **Optimize Later**: Get working solution first
-7. **Random Testing**: Test with many random inputs
-8. **Edge Cases**: Test empty, single element, sorted
-9. **Debug Output**: Add verbose mode during development
-10. **Study Algorithms**: Research sorting under constraints
+1. **Read section by section** - Don't skip ahead
+2. **Do the exercises** - They're not optional
+3. **Answer questions yourself** - Before looking up anything
+4. **Write things down** - On paper, not just thinking
+5. **Test your understanding** - Can you explain to someone else?
+
+**Remember**: The guide teaches you HOW to think about the problem. YOU must do the actual thinking and coding.
 
 ---
 
-## 💡 Extension Ideas
+**You're not looking for answers. You're building the skill to create answers.**
 
-After completing requirements:
-
-1. **Visualizer**: Create visual display of sorting
-2. **Statistics**: Track operation types used
-3. **Comparison**: Compare different algorithms
-4. **Optimizer**: Post-process to reduce operations
-5. **Parallel**: Try different strategies, pick best
-6. **Benchmarking**: Automated performance testing
-7. **Alternative Algos**: Implement Turk algorithm
-8. **Analysis Tool**: Analyze why certain inputs are hard
-
----
-
-## 📚 Additional Resources
-
-**Sorting Algorithms**:
-- [Sorting Algorithm Visualizations](https://visualgo.net/en/sorting)
-- [Big-O Cheat Sheet](https://www.bigocheatsheet.com/)
-- [Push-Swap Visualization](https://github.com/o-reo/push_swap_visualizer)
-
-**Stack Operations**:
-- [Stack Data Structure](https://www.geeksforgeeks.org/stack-data-structure/)
-- [Go Slices as Stacks](https://gobyexample.com/slices)
-
-**Algorithm Design**:
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms)
-- [Algorithms Course](https://www.coursera.org/learn/algorithms-part1)
-
----
-
-## 🎓 Learning Path
-
-**Week 1**: Stack operations + Checker + Small sorts (2-5)
-**Week 2**: Algorithm design + Medium implementation
-**Week 3**: Large number optimization + Testing
-**Week 4**: Performance tuning + Edge cases
-
----
-
-## 🔍 Debugging Strategies
-
-**Visualize Operations**:
-```go
-func printStacks(sp *StackPair, op string) {
-    fmt.Println("Operation:", op)
-    fmt.Println("Stack A:", sp.A.data)
-    fmt.Println("Stack B:", sp.B.data)
-    fmt.Println("---")
-}
-```
-
-**Track Operation Count**:
-```go
-func analyzeOperations(ops []string) {
-    counts := make(map[string]int)
-    for _, op := range ops {
-        counts[op]++
-    }
-    fmt.Println("Operation counts:", counts)
-}
-```
-
-**Test Specific Cases**:
-```bash
-# Test worst case for size 5
-./push-swap "5 4 3 2 1"
-
-# Test already sorted
-./push-swap "1 2 3 4 5"
-
-# Test random
-./push-swap "3 1 4 2 5"
-```
-
----
-
-**Remember**: Push-swap teaches you to think creatively within constraints. Real-world programming often involves working with limitations - this project builds that skill! The goal isn't just to sort, but to sort *efficiently* with limited tools. 🎯📚
+**Good luck, programmer!** 🚀
